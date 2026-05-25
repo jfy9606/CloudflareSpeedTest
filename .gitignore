@@ -2,3 +2,14 @@ dist
 Releases
 *.exe
 *.csv
+# Database
+data.db
+data.db-journal
+
+# Frontend
+frontend/node_modules
+frontend/dist
+frontend/.env
+
+# Build
+cfst

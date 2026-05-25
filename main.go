@@ -11,6 +11,7 @@ import (
 
 	"github.com/XIU2/CloudflareSpeedTest/task"
 	"github.com/XIU2/CloudflareSpeedTest/utils"
+	"github.com/XIU2/CloudflareSpeedTest/web/server"
 )
 
 var (
@@ -63,6 +64,9 @@ https://github.com/XIU2/CloudflareSpeedTest
     -o result.csv
         写入结果文件；如路径含有空格请加上引号；值为空时不写入文件 [-o ""]；(默认 result.csv)
 
+    -source "192.168.1.10"
+        指定本地网卡；测速时使用的本地 IP 地址，用于多网卡环境；(默认 空)
+
     -dd
         禁用下载测速；禁用后测速结果会按延迟排序 (默认按下载速度排序)；(默认 启用)
     -allip
@@ -98,11 +102,15 @@ https://github.com/XIU2/CloudflareSpeedTest
 	flag.StringVar(&task.IPFile, "f", "ip.txt", "IP段数据文件")
 	flag.StringVar(&task.IPText, "ip", "", "指定IP段数据")
 	flag.StringVar(&utils.Output, "o", "result.csv", "输出结果文件")
+	flag.StringVar(&task.SourceAddr, "source", "", "指定本地网卡")
 
 	flag.BoolVar(&task.Disable, "dd", false, "禁用下载测速")
 	flag.BoolVar(&task.TestAll, "allip", false, "测速全部 IP")
 
 	flag.BoolVar(&utils.Debug, "debug", false, "调试输出模式")
+
+	var runWeb bool
+	flag.BoolVar(&runWeb, "web", false, "启动 Web 界面 (默认端口 8080)")
 
 	flag.BoolVar(&printVersion, "v", false, "打印程序版本")
 	flag.Usage = func() { fmt.Print(help) }
@@ -132,6 +140,11 @@ https://github.com/XIU2/CloudflareSpeedTest
 
 func main() {
 	task.InitRandSeed() // 置随机数种子
+
+	if flag.Lookup("web").Value.String() == "true" {
+		server.StartServer(":8080")
+		return
+	}
 
 	fmt.Printf("# XIU2/CloudflareSpeedTest %s \n\n", version)
 

@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  cfst:
+    build: .
+    container_name: cfst
+    restart: always
+    network_mode: host # 为了支持多网卡测速，推荐使用 host 模式或 macvlan
+    volumes:
+      - ./data.db:/app/data.db
+      - ./ip.txt:/app/ip.txt
+    environment:
+      - TZ=Asia/Shanghai
+    ports:
+      - "8080:8080"
+
+# 如果使用 macvlan，可以参考以下配置：
+# networks:
+#   macvlan_net1:
+#     external: true
+#   macvlan_net2:
+#     external: true
+# services:
+#   cfst:
+#     networks:
+#       macvlan_net1:
+#         ipv4_address: 192.168.1.10
+#       macvlan_net2:
+#         ipv4_address: 192.168.2.10

@@ -23,7 +23,43 @@
 ****
 ## \# 快速使用
 
-### 下载运行
+### Web 界面与容器化部署 (推荐)
+
+本项目现在支持通过 Web 界面进行管理，提供直观的仪表盘、参数设置、定时任务以及优质 IP 持续监测功能。
+
+#### Docker 部署
+
+```yaml
+# docker-compose.yml
+version: '3.8'
+services:
+  cfst:
+    image: xiu2/cloudflarespeedtest:latest # 需自行构建或使用 Dockerhub 镜像
+    container_name: cfst
+    restart: always
+    network_mode: host # 推荐使用 host 模式以支持多网卡测速
+    volumes:
+      - ./data.db:/app/data.db
+    ports:
+      - "8080:8080"
+```
+
+#### 本地 Web 运行
+
+1. 编译并运行：
+   ```bash
+   ./cfst -web
+   ```
+2. 访问 `http://localhost:8080` 即可进入管理后台。
+
+**Web 界面功能：**
+- **仪表盘**：查看平均延迟、下载速度趋势图以及最近测速结果。
+- **配置中心**：支持前端修改并发线程、测速时间、延迟上限、指定测速地址等。
+- **定时任务**：支持 Cron 表达式，可配置多组不同参数的定时测速任务。
+- **优质 IP 监测 (SmokePing)**：自动筛选并高频监测（每5分钟）优质 IP，提供详细的延迟历史曲线图，自动淘汰质量下降的 IP。
+- **多网卡支持**：在配置中心可指定本地 IP (`-source`)，配合 Docker Macvlan 模式可实现多线运营商同时测速。
+
+### 命令行运行
 
 1. 下载编译好的可执行文件（ [Github Releases](https://github.com/XIU2/CloudflareSpeedTest/releases) / [蓝奏云](https://xiu.lanzoub.com/b0742hkxe) ）并解压。  
 2. 双击运行 `cfst.exe` 文件（Windows 系统），等待测速完成...
@@ -205,7 +241,12 @@ https://github.com/XIU2/CloudflareSpeedTest
         指定IP段数据；直接通过参数指定要测速的 IP 段数据，英文逗号分隔；(默认 空)
     -o result.csv
         写入结果文件；如路径含有空格请加上引号；值为空时不写入文件 [-o ""]；(默认 result.csv)
-        注意：在一些环境下使用 -o "" 可能会被忽略掉这个空参数导致报错，可加个空格 -o " " 解决
+
+    -source "192.168.1.10"
+        指定本地网卡；测速时使用的本地 IP 地址，用于多网卡环境；(默认 空)
+
+    -web
+        启动 Web 界面；启动后可通过浏览器访问管理后台，默认端口 8080；(默认 关闭)
 
     -dd
         禁用下载测速；禁用后测速结果会按延迟排序 (默认按下载速度排序)；(默认 启用)

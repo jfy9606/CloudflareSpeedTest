@@ -23,6 +23,7 @@ var (
 	Routines      = defaultRoutines
 	TCPPort   int = defaultPort
 	PingTimes int = defaultPingTimes
+	SourceAddr    = ""
 )
 
 type Ping struct {
@@ -94,7 +95,13 @@ func (p *Ping) tcping(ip *net.IPAddr) (bool, time.Duration) {
 	} else {
 		fullAddress = fmt.Sprintf("[%s]:%d", ip.String(), TCPPort)
 	}
-	conn, err := net.DialTimeout("tcp", fullAddress, tcpConnectTimeout)
+	dialer := &net.Dialer{
+		Timeout: tcpConnectTimeout,
+	}
+	if SourceAddr != "" {
+		dialer.LocalAddr = &net.TCPAddr{IP: net.ParseIP(SourceAddr)}
+	}
+	conn, err := dialer.Dial("tcp", fullAddress)
 	if err != nil {
 		return false, 0
 	}
