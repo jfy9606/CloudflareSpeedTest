@@ -7,7 +7,7 @@ COPY frontend/ ./
 RUN npm run build
 
 # Build Backend
-FROM golang:1.24-bullseye AS backend-builder
+FROM golang:1.25-bookworm AS backend-builder
 WORKDIR /app
 COPY go.mod go.sum ./
 RUN go mod download
