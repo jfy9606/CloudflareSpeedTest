@@ -129,7 +129,7 @@ func (s PingDelaySet) FilterLossRate() (data PingDelaySet) {
 		return s
 	}
 	for _, v := range s {
-		if v.getLossRate() > InputMaxLossRate { // 丢包几率上限
+		if v.GetLossRate() > InputMaxLossRate { // 丢包几率上限
 			break
 		}
 		data = append(data, v) // 丢包率满足条件时，添加到新数组中
@@ -141,7 +141,7 @@ func (s PingDelaySet) Len() int {
 	return len(s)
 }
 func (s PingDelaySet) Less(i, j int) bool {
-	iRate, jRate := s[i].getLossRate(), s[j].getLossRate()
+	iRate, jRate := s[i].GetLossRate(), s[j].GetLossRate()
 	if iRate != jRate {
 		return iRate < jRate
 	}
