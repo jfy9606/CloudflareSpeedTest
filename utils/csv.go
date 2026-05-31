@@ -46,17 +46,17 @@ type PingData struct {
 
 type CloudflareIPData struct {
 	*PingData
-	lossRate      float32
+	LossRate      float32
 	DownloadSpeed float64
 }
 
 // 计算丢包率
-func (cf *CloudflareIPData) getLossRate() float32 {
-	if cf.lossRate == 0 {
+func (cf *CloudflareIPData) GetLossRate() float32 {
+	if cf.LossRate == 0 {
 		pingLost := cf.Sended - cf.Received
-		cf.lossRate = float32(pingLost) / float32(cf.Sended)
+		cf.LossRate = float32(pingLost) / float32(cf.Sended)
 	}
-	return cf.lossRate
+	return cf.LossRate
 }
 
 func (cf *CloudflareIPData) toString() []string {
@@ -64,7 +64,7 @@ func (cf *CloudflareIPData) toString() []string {
 	result[0] = cf.IP.String()
 	result[1] = strconv.Itoa(cf.Sended)
 	result[2] = strconv.Itoa(cf.Received)
-	result[3] = strconv.FormatFloat(float64(cf.getLossRate()), 'f', 2, 32)
+	result[3] = strconv.FormatFloat(float64(cf.GetLossRate()), 'f', 2, 32)
 	result[4] = strconv.FormatFloat(cf.Delay.Seconds()*1000, 'f', 2, 32)
 	result[5] = strconv.FormatFloat(cf.DownloadSpeed/1024/1024, 'f', 2, 32)
 	// 如果 Colo 为空，则使用 "N/A" 表示

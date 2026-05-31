@@ -1,7 +1,6 @@
 package service
 
 import (
-	"fmt"
 	"log"
 	"net"
 	"sync"
@@ -136,7 +135,7 @@ func MonitorPremiumIPs() {
 		
 		// Use tcping directly for monitoring
 		ping := task.NewPing()
-		recv, totalDelay, _ := ping.checkConnection(getIPAddr(p.IP))
+		recv, totalDelay, _ := ping.CheckConnection(getIPAddr(p.IP))
 		
 		lossRate := 1.0 - float32(recv)/float32(task.PingTimes)
 		var avgDelay float64
