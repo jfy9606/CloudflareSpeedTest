@@ -7,7 +7,7 @@ COPY frontend/ ./
 RUN npm run build
 
 # Build Backend
-FROM golang:1.26-bookworm AS backend-builder
+FROM golang:1.26-trixie AS backend-builder
 ENV GOPROXY=https://goproxy.cn,direct
 WORKDIR /app
 COPY go.mod go.sum ./
